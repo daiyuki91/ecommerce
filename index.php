@@ -8,6 +8,7 @@ use \Slim\Slim;
 use \Hcode\Page;
 use \Hcode\PageAdmin;
 use \Hcode\Model\User;
+use \Hcode\Model\Category;
 
 $app = new Slim();
 
@@ -244,6 +245,54 @@ $app->post("/admin/forgot/reset", function() {
 	]);
 	
 	$page->setTpl("forgot-reset-success");
+	
+});
+
+//rota tela - categorias
+$app->get("/admin/categories", function() {
+	
+	//criando a lista de categorias
+	$categories = Category::listAll();
+	
+	$page = new PageAdmin();
+	
+	$page->setTpl("categories", array(
+		"categories"=>$categories
+	));
+	
+});
+
+//rota tela - categorias (abrindo a página para criar uma nova categoria)
+$app->get("/admin/categories/create", function() {
+	
+	$page = new PageAdmin();
+	
+	$page->setTpl("categories-create");
+	
+});
+
+//rota tela - categorias (criando uma nova categoria)
+$app->post("/admin/categories/create", function() {
+	
+	$category = new Category();
+	$category->setData($_POST); //class Model
+	$category->save();
+	
+	header("Location: /admin/categories");
+	exit;
+	
+});
+
+//rota tela - categorias (apagando uma categoria)
+$app->get("/admin/categories/:idcategory/delete", function($idcategory) {
+	
+	$category = new Category();
+	
+	$category->get((int)$idcategory);
+	$category->delete();
+	
+	header("Location: /admin/categories");
+	exit;
 	
 });
 
