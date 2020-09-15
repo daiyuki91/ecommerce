@@ -7,6 +7,10 @@ namespace Composer\Autoload;
 class ComposerStaticInit161cbf6246cd6ae706452d0323d3c076
 {
     public static $prefixLengthsPsr4 = array (
+        'P' => 
+        array (
+            'PHPMailer\\PHPMailer\\' => 20,
+        ),
         'H' => 
         array (
             'Hcode\\' => 6,
@@ -14,6 +18,10 @@ class ComposerStaticInit161cbf6246cd6ae706452d0323d3c076
     );
 
     public static $prefixDirsPsr4 = array (
+        'PHPMailer\\PHPMailer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
+        ),
         'Hcode\\' => 
         array (
             0 => __DIR__ . '/..' . '/hcodebr/php-classes/src',
@@ -37,24 +45,12 @@ class ComposerStaticInit161cbf6246cd6ae706452d0323d3c076
         ),
     );
 
-    public static $classMap = array (
-        'EasyPeasyICS' => __DIR__ . '/..' . '/phpmailer/phpmailer/extras/EasyPeasyICS.php',
-        'PHPMailer' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmailer.php',
-        'PHPMailerOAuth' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmaileroauth.php',
-        'PHPMailerOAuthGoogle' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmaileroauthgoogle.php',
-        'POP3' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.pop3.php',
-        'SMTP' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.smtp.php',
-        'ntlm_sasl_client_class' => __DIR__ . '/..' . '/phpmailer/phpmailer/extras/ntlm_sasl_client.php',
-        'phpmailerException' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmailer.php',
-    );
-
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInit161cbf6246cd6ae706452d0323d3c076::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInit161cbf6246cd6ae706452d0323d3c076::$prefixDirsPsr4;
             $loader->prefixesPsr0 = ComposerStaticInit161cbf6246cd6ae706452d0323d3c076::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit161cbf6246cd6ae706452d0323d3c076::$classMap;
 
         }, null, ClassLoader::class);
     }
