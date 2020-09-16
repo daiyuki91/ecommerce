@@ -339,6 +339,22 @@ $app->post("/admin/categories/:idcategory", function($idcategory) {
 	
 });
 
+//rota tela - categorias (mostrando a categoria)
+$app->get("/categories/:idcategory", function($idcategory) {
+	
+	User::verifyLogin(); //verificar se está logado no admin
+	
+	$category = new Category();
+	
+	$category->get((int)$idcategory);
+	
+	$page = new Page();
+	$page->setTpl("category", [
+		'category'=>$category->getValues(),
+		'products'=>[]
+	]);
+	
+});
 
 $app->run(); //faz rodar tudo que está na memória
 

@@ -38,6 +38,8 @@ class Category extends Model {
 		
 		$this->setData($results[0]);
 		
+		Category::updateFile(); //atualizar o arquivo html com a lista de categorias
+		
 	}
 	
 	public function get($idcategory)
@@ -65,6 +67,25 @@ class Category extends Model {
 				":idcategory"=>$this->getidcategory()
 			)
 		);
+		
+		Category::updateFile(); //atualizar o arquivo html com a lista de categorias
+		
+	}
+	
+	//método para atualizar a lista de categorias do arquivo "categories-menu.html"
+	public static function updateFile()
+	{
+		
+		$categories = Category::listAll(); //trazer todas as categorias que estão no banco de dados
+		
+		$html = [];
+
+		foreach ($categories as $row) {
+			array_push($html, '<li><a href="/categories/'.$row['idcategory'].'">'.$row['descategory'].'</a></li>');
+		}
+		
+		//função implode para um array se tornar uma string
+		file_put_contents($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . "categories-menu.html", implode('', $html));
 		
 	}
 	
