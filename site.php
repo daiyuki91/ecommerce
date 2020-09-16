@@ -1,19 +1,17 @@
 <?php
 
 use \Hcode\Page;
+use \Hcode\Model\Product;
 
 //rota principal
 $app->get('/', function() {
     
-	/*
-	//teste inicial
-	$sql = new Hcode\DB\Sql();
-	$results = $sql->select("SELECT * FROM tb_users");
-	echo json_encode($results);
-	*/
+	$products = Product::listAll();
 	
 	$page = new Page();
-	$page->setTpl("index");
+	$page->setTpl("index", array(
+		'products'=>Product::checkList($products)
+	));
 	
 });
 
