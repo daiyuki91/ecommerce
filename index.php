@@ -251,6 +251,8 @@ $app->post("/admin/forgot/reset", function() {
 //rota tela - categorias
 $app->get("/admin/categories", function() {
 	
+	User::verifyLogin(); //verificar se está logado no admin
+	
 	//criando a lista de categorias
 	$categories = Category::listAll();
 	
@@ -265,6 +267,8 @@ $app->get("/admin/categories", function() {
 //rota tela - categorias (abrindo a página para criar uma nova categoria)
 $app->get("/admin/categories/create", function() {
 	
+	User::verifyLogin(); //verificar se está logado no admin
+	
 	$page = new PageAdmin();
 	
 	$page->setTpl("categories-create");
@@ -273,6 +277,8 @@ $app->get("/admin/categories/create", function() {
 
 //rota tela - categorias (criando uma nova categoria)
 $app->post("/admin/categories/create", function() {
+	
+	User::verifyLogin(); //verificar se está logado no admin
 	
 	$category = new Category();
 	$category->setData($_POST); //class Model
@@ -286,6 +292,8 @@ $app->post("/admin/categories/create", function() {
 //rota tela - categorias (apagando uma categoria)
 $app->get("/admin/categories/:idcategory/delete", function($idcategory) {
 	
+	User::verifyLogin(); //verificar se está logado no admin
+	
 	$category = new Category();
 	
 	$category->get((int)$idcategory);
@@ -295,6 +303,42 @@ $app->get("/admin/categories/:idcategory/delete", function($idcategory) {
 	exit;
 	
 });
+
+//rota tela - categorias (editando uma categoria)
+$app->get("/admin/categories/:idcategory", function($idcategory) {
+	
+	User::verifyLogin(); //verificar se está logado no admin
+	
+	$category = new Category();
+	
+	$category->get((int)$idcategory);
+	
+	$page = new PageAdmin();
+	
+	$page->setTpl("categories-update", array(
+		"category"=>$category->getValues()		//converter o objeto em dados em forma de array
+	));
+	
+});
+
+//rota tela - categorias (editando uma categoria)
+$app->post("/admin/categories/:idcategory", function($idcategory) {
+	
+	User::verifyLogin(); //verificar se está logado no admin
+	
+	$category = new Category();
+	
+	$category->get((int)$idcategory);
+	
+	$category->setData($_POST); //carrega os dados que vieram através do método post (dados dos formulários)
+	
+	$category->save();
+	
+	header("Location: /admin/categories");
+	exit;
+	
+});
+
 
 $app->run(); //faz rodar tudo que está na memória
 
