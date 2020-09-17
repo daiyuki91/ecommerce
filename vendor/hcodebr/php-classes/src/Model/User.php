@@ -12,6 +12,61 @@ class User extends Model {
 	const SECRET = "HcodePhp7_Secret"; //chave com 16 caracteres
 	const SECRET_IV = "HcodePhp7_Secret_IV"; //chave com 16 caracteres IV
 	
+	//método para retornar a seção do usuário
+	public static function getFromSession()
+	{
+		
+		$user = new User();
+		
+		if (isset($_SESSION[User::SESSION]) && (int)$_SESSION[User::SESSION]['iduser'] > 0) {
+			
+			$user->setData($_SESSION[User::SESSION]);
+			
+		}
+		
+		return $user;
+		
+	}
+	
+	//verificar se o usuário está logado (retorna = true/false)
+	public static function checkLogin($inadmin = true)
+	{
+		
+		if (
+			!isset($_SESSION[User::SESSION])						//esta session não foi definida?
+			||
+			!$_SESSION[User::SESSION]								//sessão foi definida mas possui valor vazio
+			||
+			!(int)$_SESSION[User::SESSION]["iduser"] > 0			//verifica se realmente é um usuário
+		) {
+			
+			//Não está logado ===========
+			return false;
+			
+		} else {
+			
+			//Está logado ================
+			
+			if ($inadmin === true && (bool)$_SESSION[User::SESSION]['inadmin'] === true) { 
+				
+				//rota do adminstrador (precisa verificar se o usuário tem permissão, inadmin = true)
+				return true;
+				
+			} else if ($inadmin === false) { 
+				
+				//rota que não é do administrador (parte do site que pode ter acesso livre, por exemplo na parte do carrinho)
+				return true;
+				
+			} else {
+				
+				return false;
+				
+			}
+			
+		}
+		
+	}
+	
 	public static function login($login, $password) {
 		
 		$sql = new Sql();
@@ -53,15 +108,7 @@ class User extends Model {
 	public static function verifyLogin($inadmin = true)
 	{
 		
-		if (
-			!isset($_SESSION[User::SESSION])						//esta session não foi definida?
-			||
-			!$_SESSION[User::SESSION]								//sessão foi definida mas possui valor vazio
-			||
-			!(int)$_SESSION[User::SESSION]["iduser"] > 0			//verifica se realmente é um usuário
-			||
-			(bool)$_SESSION[User::SESSION]["inadmin"] !== $inadmin	//este usuário é um usuário da administração
-		) {
+		if (User::checkLogin($inadmin)) {
 			
 			header("Location: /admin/login");
 			exit;

@@ -24,7 +24,7 @@ class Category extends Model {
 		$sql = new Sql();
 		
 		/*
-			//Ordem de variáriveis de entrada da procedure sp_user_save
+			//Ordem de variáriveis de entrada da procedure sp_categories_save
 			pidcategory INT,
 			pdescategory VARCHAR(64)
 		*/
