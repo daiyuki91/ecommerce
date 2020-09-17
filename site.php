@@ -46,4 +46,19 @@ $app->get("/categories/:idcategory", function($idcategory) {
 	
 });
 
+//rota tela - produtos
+$app->get("/products/:desurl", function($desurl){
+	
+	$product = new Product();
+	
+	$product->getFromURL($desurl); //na função getFromURL, a instrução "$this->setData" carrega os dados para o próprio objeto
+	
+	$page = new Page();
+	$page->setTpl("product-detail", array(
+		'product'=>$product->getValues(),
+		'categories'=>$product->getCategories()
+	));
+	
+});
+
 ?>
