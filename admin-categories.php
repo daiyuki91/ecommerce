@@ -3,6 +3,7 @@
 use \Hcode\PageAdmin;
 use \Hcode\Model\User;
 use \Hcode\Model\Category;
+use \Hcode\Model\Product;
 
 //rota tela - categorias
 $app->get("/admin/categories", function() {
@@ -95,8 +96,9 @@ $app->post("/admin/categories/:idcategory", function($idcategory) {
 	
 });
 
-//rota tela - categorias (mostrando a categoria)
-$app->get("/categories/:idcategory", function($idcategory) {
+
+//rota tela - categorias (listar produtos de uma determinada categoria)
+$app->get("/admin/categories/:idcategory/products", function($idcategory) {
 	
 	User::verifyLogin(); //verificar se está logado no admin
 	
@@ -104,11 +106,52 @@ $app->get("/categories/:idcategory", function($idcategory) {
 	
 	$category->get((int)$idcategory);
 	
-	$page = new Page();
-	$page->setTpl("category", [
+	$page = new PageAdmin();
+	$page->setTpl("categories-products", array(
 		'category'=>$category->getValues(),
-		'products'=>[]
-	]);
+		'productsRelated'=>$category->getProducts(true),	//por padrão, recebe o valor "true" e lista os produtos relacionados a esta categoria
+		'productsNotRelated'=>$category->getProducts(false)
+	));
+	
+});
+
+//rota tela - categorias (adicionar produtos em uma determinada categoria)
+$app->get("/admin/categories/:idcategory/products/:idproduct/add", function($idcategory, $idproduct) {
+	
+	User::verifyLogin(); //verificar se está logado no admin
+	
+	$category = new Category();
+	
+	$category->get((int)$idcategory);
+	
+	$product = new Product();
+	
+	$product->get((int)$idproduct);
+	
+	$category->addProduct($product);
+	
+	header("Location: /admin/categories/".$idcategory."/products");
+	exit;
+	
+});
+
+//rota tela - categorias (remover produtos de uma determinada categoria)
+$app->get("/admin/categories/:idcategory/products/:idproduct/remove", function($idcategory, $idproduct) {
+	
+	User::verifyLogin(); //verificar se está logado no admin
+	
+	$category = new Category();
+	
+	$category->get((int)$idcategory);
+	
+	$product = new Product();
+	
+	$product->get((int)$idproduct);
+	
+	$category->removeProduct($product);
+	
+	header("Location: /admin/categories/".$idcategory."/products");
+	exit;
 	
 });
 

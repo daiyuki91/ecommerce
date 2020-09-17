@@ -72,7 +72,7 @@ class Category extends Model {
 		
 	}
 	
-	//método para atualizar a lista de categorias do arquivo "categories-menu.html"
+	//método para ATUALIZAR a lista de categorias do arquivo "categories-menu.html"
 	public static function updateFile()
 	{
 		
@@ -86,6 +86,72 @@ class Category extends Model {
 		
 		//função implode para um array se tornar uma string
 		file_put_contents($_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . "views" . DIRECTORY_SEPARATOR . "categories-menu.html", implode('', $html));
+		
+	}
+	
+	//método para TRAZER todos os produtos de uma categoria
+	public function getProducts($related = true)
+	{
+		
+		$sql = new Sql();
+		
+		if ($related === true) {
+			
+			return $sql->select("
+				SELECT * FROM tb_products WHERE idproduct IN (
+					SELECT a.idproduct 
+					FROM tb_products a
+					INNER JOIN tb_productscategories b ON a.idproduct = b.idproduct
+					WHERE b.idcategory = :idcategory
+				);
+			", [
+				":idcategory"=>$this->getidcategory()
+			]);
+			
+		} else {
+			
+			return $sql->select("
+				SELECT * FROM tb_products WHERE idproduct NOT IN (
+					SELECT a.idproduct 
+					FROM tb_products a
+					INNER JOIN tb_productscategories b ON a.idproduct = b.idproduct
+					WHERE b.idcategory = :idcategory
+				);
+			", [
+				":idcategory"=>$this->getidcategory()
+			]);
+			
+		}
+		
+	}
+	
+	//método para ADICIONAR um produto em uma categoria
+	public function addProduct(Product $product)
+	{
+		
+		$sql = new Sql();
+		
+		$sql->query("INSERT INTO tb_productscategories (idcategory, idproduct) VALUES(:idcategory, :idproduct)",
+			array(
+				":idcategory"=>$this->getidcategory(),
+				":idproduct"=>$product->getidproduct()
+			)
+		);
+		
+	}
+	
+	//método para REMOVER um produto em uma categoria
+	public function removeProduct(Product $product)
+	{
+		
+		$sql = new Sql();
+		
+		$sql->query("DELETE FROM tb_productscategories WHERE idcategory = :idcategory AND idproduct = :idproduct",
+			array(
+				":idcategory"=>$this->getidcategory(),
+				":idproduct"=>$product->getidproduct()
+			)
+		);
 		
 	}
 	
