@@ -11,8 +11,8 @@ use PHPMailer\PHPMailer\Exception;
 
 class Mailer {
 	
-	const USERNAME = "daiyuki.m.f@gmail.com";
-	const PASSWORD = "dai140891";
+	const USERNAME = "EMAIL";
+	const PASSWORD = "SENHA";
 	const NAME_FROM = "Hcode Store";
 	
 	private $mail; //atributo criado para ser retornado (usar o método send em outro escopo, criar uma camada de segurança)

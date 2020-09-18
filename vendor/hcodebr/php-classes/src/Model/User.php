@@ -13,6 +13,7 @@ class User extends Model {
 	const SECRET_IV = "HcodePhp7_Secret_IV"; //chave com 16 caracteres IV
 	const ERROR = "UserError";
 	const ERROR_REGISTER = "UserErrorRegister";
+	const SUCCESS = "UserSucess";
 	
 	//método para retornar a seção do usuário
 	public static function getFromSession()
@@ -396,6 +397,31 @@ class User extends Model {
 	{
 		
 		$_SESSION[User::ERROR] = NULL;
+		
+	}
+	
+	public static function setSuccess($msg)
+	{
+		
+		$_SESSION[User::SUCCESS] = $msg;
+		
+	}
+	
+	public static function getSuccess()
+	{
+		
+		$msg = (isset($_SESSION[User::SUCCESS])) && $_SESSION[User::SUCCESS] ? $_SESSION[User::SUCCESS] : "";
+		
+		User::clearSuccess();
+		
+		return $msg;
+		
+	}
+	
+	public static function clearSuccess()
+	{
+		
+		$_SESSION[User::SUCCESS] = NULL;
 		
 	}
 	
