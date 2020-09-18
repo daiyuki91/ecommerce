@@ -4,6 +4,8 @@ use \Hcode\Page;
 use \Hcode\Model\Product;
 use \Hcode\Model\Category;
 use \Hcode\Model\Cart;
+use \Hcode\Model\Address;
+use \Hcode\Model\User;
 
 //rota principal
 $app->get('/', function() {
@@ -131,7 +133,7 @@ $app->get("/cart/:idproduct/remove", function($idproduct){
 	
 });
 
-//rota tela - cart
+//rota tela - cart (CALCULAR FRETE)
 $app->post("/cart/freight", function(){
 	
 	$cart = Cart::getFromSession(); //retoma o carrinho da sessão
@@ -139,6 +141,64 @@ $app->post("/cart/freight", function(){
 	$cart->setFreight($_POST['zipcode']);
 	
 	header("Location: /cart");
+	exit;
+	
+});
+
+//rota tela - checkout (?)
+$app->get("/checkout", function(){
+	
+	User::verifyLogin(false);
+	
+	$cart = Cart::getFromSession();
+	
+	$address = new Address();
+	
+	$page = new Page();
+	
+	$page->setTpl("checkout", [
+		"cart"=>$cart->getValues(),
+		"address"=>$address->getValues()
+	]);
+	
+});
+
+
+//rota tela - login (cliente)
+$app->get("/login", function(){
+	
+	$page = new Page();
+	
+	$page->setTpl("login", [
+		'error'=>User::getError()
+	]);
+	
+});
+
+//rota tela - login (cliente) - recebendo os dados do formulário pelo método post
+$app->post("/login", function(){
+	
+	try {
+		
+		User::login($_POST['login'], $_POST['password']);
+		
+	} catch(Exception $e) {
+		
+		User::setError($e->getMessage());
+		
+	}
+	
+	header("Location: /checkout");
+	exit;
+	
+});
+
+//rota tela - logout (cliente)
+$app->get("/logout", function(){
+	
+	user::logout();
+	
+	header("Location: /login");
 	exit;
 	
 });
