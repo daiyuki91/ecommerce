@@ -398,6 +398,17 @@ class User extends Model {
 		
 	}
 	
+	public static function getErrorRegister()
+	{
+		
+		$msg = (isset($_SESSION[User::ERROR_REGISTER])) && $_SESSION[User::ERROR_REGISTER] ? $_SESSION[User::ERROR_REGISTER] : "";
+		
+		User::clearErrorRegister();
+		
+		return $msg;
+		
+	}
+	
 	public static function clearErrorRegister()
 	{
 		
