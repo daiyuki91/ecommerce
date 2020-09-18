@@ -11,6 +11,7 @@ $app->get('/admin', function() {
 	$page = new PageAdmin();
 	$page->setTpl("index");
 	
+	
 });
 
 //rota login - get
