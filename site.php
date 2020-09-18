@@ -18,7 +18,7 @@ $app->get('/', function() {
 });
 
 
-//rota tela - categorias (mostrando a categoria)
+//rota tela - categorias (MOSTRAR a categoria)
 $app->get("/categories/:idcategory", function($idcategory) {
 	
 	$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
@@ -69,7 +69,64 @@ $app->get("/cart", function(){
 	
 	$page = new Page();
 	
-	$page->setTpl("cart");
+	$page->setTpl("cart", [
+		"cart"=>$cart->getValues(),
+		"products"=>$cart->getProducts()
+	]);
+	
+});
+
+//rota tela - cart (ADICIONAR produtos no carrinho)
+$app->get("/cart/:idproduct/add", function($idproduct){
+	
+	$product = new Product();
+	
+	$product->get((int)$idproduct);
+	
+	$cart = Cart::getFromSession(); //retoma o carrinho da sessão
+	
+	$qtd = (isset($_GET['qtd'])) ? (int)$_GET['qtd'] : 1;
+	
+	for ($i = 0; $i < $qtd; $i++) {
+		
+		$cart->addProduct($product);
+		
+	}
+	
+	header("Location: /cart");
+	exit;
+	
+});
+
+//rota tela - cart (REMOVER UM ITEM do produto no carrinho)
+$app->get("/cart/:idproduct/minus", function($idproduct){
+	
+	$product = new Product();
+	
+	$product->get((int)$idproduct);
+	
+	$cart = Cart::getFromSession(); //retoma o carrinho da sessão
+	
+	$cart->removeProduct($product); //por padrão, só remove um item
+	
+	header("Location: /cart");
+	exit;
+	
+});
+
+//rota tela - cart (REMOVER TODOS ITENS de um produto no carrinho)
+$app->get("/cart/:idproduct/remove", function($idproduct){
+	
+	$product = new Product();
+	
+	$product->get((int)$idproduct);
+	
+	$cart = Cart::getFromSession(); //retoma o carrinho da sessão
+	
+	$cart->removeProduct($product, true); //remove todos os itens de um produto
+	
+	header("Location: /cart");
+	exit;
 	
 });
 
