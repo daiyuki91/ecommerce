@@ -261,4 +261,75 @@ $app->post("/register", function(){
 	exit;
 });
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//rota tela - forgot (solicitando a recuperação de senha)
+$app->get("/forgot", function() {
+
+	$page = new Page();
+	
+	$page->setTpl("forgot");
+
+});
+
+//rota tela - forgot-sent (coletando o email de recuperação)
+$app->post("/forgot", function() {
+	
+	$user = User::getForgot($_POST["email"], false);
+	
+	header("Location: /forgot/sent");
+	exit;
+	
+});
+
+//rota tela - forgot-sent (confirmação do envio do email de redefinição de senha)
+$app->get("/forgot/sent", function() {
+	
+	$page = new Page();
+	
+	$page->setTpl("forgot-sent");
+	
+});
+
+//rota tela - forgot-reset (redefinição de senha)
+$app->get("/forgot/reset", function() {
+	
+	$user = User::validForgotDecrypt($_GET["code"]);
+	
+	
+	$page = new Page();
+	
+	$page->setTpl("forgot-reset", array(
+		"name"=>$user["desperson"],
+		"code"=>$_GET["code"]
+	));
+	
+});
+
+//rota tela - forgot-reset (informar a nova senha)
+$app->post("/forgot/reset", function() {
+	
+	$forgot = User::validForgotDecrypt($_POST["code"]);
+	
+	//registrar a solicitação da mudança de senha para verificar se o link de recuperação foi usado dentro de 1 hora
+	User::setForgotUsed($forgot["idrecovery"]);
+	
+	//carregando os dados do usuário
+	$user = new User();
+	$user->get((int)$forgot["iduser"]);
+	
+	$password = password_hash($_POST["password"], PASSWORD_DEFAULT, [
+		"cost"=>12
+	]);
+	
+	//este método é usado para criar um hash para a senha
+	$user->setPassword($password);
+	
+	//confirmação visual da alteração da senha
+	$page = new Page();
+	
+	$page->setTpl("forgot-reset-success");
+	
+});
+
 ?>
