@@ -590,4 +590,42 @@ $app->get("/boleto/:idorder", function($idorder){
 	
 });
 
+//rota tela - my orders (cliente) - meus pedidos
+$app->get("/profile/orders", function(){
+	
+	User::verifyLogin(false);
+	
+	$user = User::getFromSession();
+	
+	$page = new Page();
+	
+	$page->setTpl("profile-orders", [
+		'orders'=>$user->getOrders()
+	]);
+	
+});
+
+//rota tela - profile-details
+$app->get("/profile/orders/:idorder", function($idorder){
+	
+	User::verifyLogin(false);
+	
+	$order = new Order();
+	
+	$order->get((int)$idorder);
+	
+	$cart = new Cart();
+	
+	$cart->get((int)$order->getidcart());
+	
+	$page = new Page();
+	
+	$page->setTpl("profile-orders-detail", [
+		'order'=>$order->getValues(),
+		'products'=>$cart->getProducts(),
+		'cart'=>$cart->getValues()
+	]);
+	
+});
+
 ?>

@@ -6,7 +6,7 @@ use \Hcode\DB\Sql;
 use \Hcode\Model;
 use \Hcode\Mailer;
 use \Hcode\Model\User;
-use \Hcode\Model\Product;
+//use \Hcode\Model\Product;
 
 class Cart extends Model {
 	
@@ -23,6 +23,18 @@ class Cart extends Model {
 			
 			$cart->get((int)$_SESSION[Cart::SESSION]['idcart']);
 			
+			if (User::checkLogin(false)) {
+				
+					$user = User::getFromSession();
+					
+					$data['iduser'] = $user->getiduser();
+					
+					$cart->setData($data);
+				
+					$cart->save();
+					
+				}
+			
 		} else {
 			
 			$cart->getFromSessionID();
@@ -33,7 +45,7 @@ class Cart extends Model {
 					'dessessionid'=>session_id() //função do PHP
 				];
 				
-				if (User::checkLogin(false) === true ) {
+				if (User::checkLogin(false)) {
 				
 					$user = User::getFromSession();
 					
@@ -50,6 +62,17 @@ class Cart extends Model {
 			}
 			
 		}
+		
+		// if (User::checkLogin(false)) {
+		
+			// $user = User::getFromSession();
+			
+			// //$data['iduser'] = $user->getiduser();
+			
+		// }
+				
+		// var_dump($user); echo "<br>"; echo "<br>";
+		// exit;
 		
 		return $cart;
 		
