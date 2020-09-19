@@ -35,6 +35,7 @@ $app->get('/admin/users/:iduser/delete', function($iduser) {
 	$user = new User();
 	$user->get((int)$iduser);
 	
+	
 	//deletando usuário
 	$user->delete();
 	

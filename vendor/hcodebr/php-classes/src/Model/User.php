@@ -205,19 +205,26 @@ class User extends Model {
 			pinadmin TINYINT
 		*/
 		
+		if ($this->getinadmin() !== NULL) {
+			$auxNrphone = $this->getinadmin();
+		} else {
+			$auxNrphone = "";
+		}
+		
 		$results = $sql->select("CALL sp_usersupdate_save(:iduser, :desperson, :deslogin, :despassword, :desemail, :nrphone, :inadmin)",
 			array(
 				":iduser"=>$this->getiduser(),
-				":desperson"=>utf8_decode($this->getdesperson()),
+				":desperson"=>$this->getdesperson(),
 				":deslogin"=>$this->getdeslogin(),
-				":despassword"=>User::getPasswordHash($this->getdespassword()),
+				":despassword"=>$this->getdespassword(),
 				":desemail"=>$this->getdesemail(),
-				":nrphone"=>$this->getnrphone(),
+				":nrphone"=>$auxNrphone,
 				":inadmin"=>$this->getinadmin()
 				)
 		); //chamar uma procedure para inserir um novo usuário (só com uma chamada, requisição)
 		
 		$this->setData($results[0]);
+		$_SESSION[User::SESSION] = $this->getValues(); //gravar as alterações na sessão
 		
 	}
 	

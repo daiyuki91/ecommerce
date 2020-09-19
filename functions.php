@@ -60,4 +60,15 @@ function analisarParam($param)
 	
 }
 
+function analisarSql($procidure, $array_param)
+{
+	
+	echo "CALL " . $procidure . "(";
+	foreach($array_param as $value) {
+		echo $value . ", ";
+	}
+	echo ")<br>";
+	
+}
+
 ?>
