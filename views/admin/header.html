@@ -259,7 +259,13 @@ desired effect
         <li><a href="/admin/users"><i class="fa fa-users"></i> <span>Usuários</span></a></li>
         <li><a href="/admin/categories"><i class="fa fa-link"></i> <span>Categorias</span></a></li>
 		<li><a href="/admin/products"><i class="fa fa-link"></i> <span>Produtos</span></a></li>
-        <li class="treeview">
+		<li><a href="/admin/orders"><i class="fa fa-shopping-cart"></i> <span>Pedidos</span></a></li>
+        
+		<!--
+		
+		Exemplo de opções em cascata (verificar se é esse o nome correto)
+		
+		<li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
@@ -270,6 +276,9 @@ desired effect
             <li><a href="#">Link in level 2</a></li>
           </ul>
         </li>
+		
+		-->
+		
       </ul>
       <!-- /.sidebar-menu -->
     </section>

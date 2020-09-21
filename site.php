@@ -156,7 +156,7 @@ $app->get("/checkout", function(){
 	$address = new Address();
 	$cart = Cart::getFromSession();
 	
-	if (isset($_GET['zipcode'])) {
+	if (!isset($_GET['zipcode'])) {
 		
 		$_GET['zipcode'] = $cart->getdeszipcode();
 		
@@ -202,7 +202,7 @@ $app->post("/checkout", function(){
 		Address::setMsgError("Informe o CEP.");
 		header("Location: /checkout");
 		exit;
-	}
+	} 
 	
 	if (!isset($_POST['desaddress']) || $_POST['desaddress'] === "") {
 		Address::setMsgError("Informe o endereço.");
@@ -236,10 +236,10 @@ $app->post("/checkout", function(){
 	
 	$user = user::getFromSession();
 	
-	$address = new Address();
-	
 	$_POST['deszipcode'] = $_POST['zipcode'];
 	$_POST['idperson'] = $user->getidperson();
+	
+	$address = new Address();
 	
 	$address->setData($_POST);
 	
@@ -532,7 +532,7 @@ $app->get("/boleto/:idorder", function($idorder){
 	$taxa_boleto = 5.00;
 	$data_venc = date("d/m/Y", time() + ($dias_de_prazo_para_pagamento * 86400));  // Prazo de X dias OU informe data: "13/04/2006"; 
 	$valor_cobrado = $order->getvltotal(); // Valor - REGRA: Sem pontos na milhar e tanto faz com "." ou "," ou com 1 ou 2 ou sem casa decimal
-	$valor_cobrado = str_replace(",", ".",$valor_cobrado);
+	//$valor_cobrado = str_replace(",", ".",$valor_cobrado);
 	$valor_boleto=number_format($valor_cobrado+$taxa_boleto, 2, ',', '');
 
 	$dadosboleto["nosso_numero"] = $order->getidorder();  // Nosso numero - REGRA: Máximo de 8 caracteres!
