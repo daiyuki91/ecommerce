@@ -15,6 +15,8 @@ class User extends Model {
 	const ERROR_REGISTER = "UserErrorRegister";
 	const SUCCESS = "UserSucess";
 	
+	const ITEMS_PER_PAGE = 10;
+	
 	//método para retornar a seção do usuário
 	public static function getFromSession()
 	{
@@ -501,6 +503,57 @@ class User extends Model {
 		
 		return $results;
 		
+	}
+	
+	public static function getPage($page = 1, $itemsPerPage = User::ITEMS_PER_PAGE)
+	{
+		
+		$start = ($page-1) * $itemsPerPage;
+		
+		$sql = new Sql();
+		
+		$results = $sql->select("
+			SELECT SQL_CALC_FOUND_ROWS *
+			FROM tb_users a 
+			INNER JOIN tb_persons b USING(idperson) 
+			ORDER BY b.desperson
+			LIMIT $start, $itemsPerPage;
+		");
+		
+		$resultTotal = $sql->select("SELECT FOUND_ROWS() AS nrtotal;");
+		
+		return [
+			'data'=>$results,
+			'total'=>(int)$resultTotal[0]["nrtotal"],
+			'pages'=>ceil($resultTotal[0]["nrtotal"] / $itemsPerPage) //função do PHP para arredondar para cima
+		];
+	}
+	
+	public static function getPageSearch($search, $page = 1, $itemsPerPage = User::ITEMS_PER_PAGE)
+	{
+		
+		$start = ($page-1) * $itemsPerPage;
+		
+		$sql = new Sql();
+		
+		$results = $sql->select("
+			SELECT SQL_CALC_FOUND_ROWS *
+			FROM tb_users a 
+			INNER JOIN tb_persons b USING(idperson) 
+			WHERE b.desperson LIKE :search OR b.desemail = :search OR a.deslogin LIKE :search
+			ORDER BY b.desperson
+			LIMIT $start, $itemsPerPage;
+		", [
+			":search"=>'%'.$search.'%'
+		]);
+		
+		$resultTotal = $sql->select("SELECT FOUND_ROWS() AS nrtotal;");
+		
+		return [
+			'data'=>$results,
+			'total'=>(int)$resultTotal[0]["nrtotal"],
+			'pages'=>ceil($resultTotal[0]["nrtotal"] / $itemsPerPage) //função do PHP para arredondar para cima
+		];
 	}
 	
 }
