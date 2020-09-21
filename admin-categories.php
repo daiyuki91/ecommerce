@@ -10,13 +10,43 @@ $app->get("/admin/categories", function() {
 	
 	User::verifyLogin(); //verificar se está logado no admin
 	
+	$search = (isset($_GET['search'])) ? $_GET['search'] : "";
+	$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1;
+	
+	//filtro a partir do search
+	if ($search != '') {
+		
+		$pagination = Category::getPageSearch($search, $page);
+		
+	} else {
+		
+		$pagination = Category::getPage($page);
+		
+	}
+	
+	$pages = [];
+	
+	for ($x = 0; $x < $pagination['pages']; $x++) {
+		
+		array_push($pages, [
+			'href'=>'/admin/categories?'.http_build_query([
+				'page'=>$x+1,
+				'search'=>$search
+			]),
+			'text'=>$x+1
+		]);
+		
+	}
+	
 	//criando a lista de categorias
 	$categories = Category::listAll();
 	
 	$page = new PageAdmin();
 	
 	$page->setTpl("categories", array(
-		"categories"=>$categories
+		"categories"=>$pagination['data'],
+		"search"=>$search,
+		"pages"=>$pages
 	));
 	
 });
