@@ -60,6 +60,7 @@ class Address extends Model {
 			pidaddress int(11), 
 			pidperson int(11),
 			pdesaddress varchar(128),
+			pdesnumber varchar(16),
 			pdescomplement varchar(32),
 			pdescity varchar(32),
 			pdesstate varchar(32),
@@ -68,11 +69,12 @@ class Address extends Model {
 			pdesdistrict varchar(32)
 		*/
 		
-		$results = $sql->select("CALL sp_addresses_save (:idaddress, :idperson, :desaddress, :descomplement, :descity, :desstate, :descountry, :deszipcode, :desdistrict)",
+		$results = $sql->select("CALL sp_addresses_save (:idaddress, :idperson, :desaddress, :desnumber, :descomplement, :descity, :desstate, :descountry, :deszipcode, :desdistrict)",
 			array(
 				":idaddress"=>$this->getidaddress(),
 				":idperson"=>$this->getidperson(),
 				":desaddress"=>$this->getdesaddress(),
+				":desnumber"=>$this->getdesnumber(),
 				":descomplement"=>$this->getdescomplement(),
 				":descity"=>$this->getdescity(),
 				":desstate"=>$this->getdesstate(),
